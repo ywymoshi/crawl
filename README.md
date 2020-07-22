@@ -15,10 +15,10 @@
     修改数据库 /db/db.js 连接
     打开命令行工具执行以下脚本,导入mongodb 数据
        cd crawl
-       mongoimport -d lagou -c courselessons  --type json --file './db/data/courselessons.json'
-       mongoimport -d lagou -c lessons  --type json --file './db/data/lessons.json'
-       mongoimport -d lagou -c courses  --type json --file './db/data/courses.json'
-       mongoimport -d lagou -c users  --type json --file './db/data/users.json'
+       mongoimport -d test -c courselessons  --type json --file './db/data/courselessons.json'
+       mongoimport -d test -c lessons  --type json --file './db/data/lessons.json'
+       mongoimport -d test -c courses  --type json --file './db/data/courses.json'
+       mongoimport -d test -c users  --type json --file './db/data/users.json'
        s
     ```
     
