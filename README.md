@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-# crawl
-仅供学习
-=======
+
 # 学习资料
 
     说明
@@ -30,4 +27,3 @@
     npm install 
     node index.js
     ```
->>>>>>> first commit
