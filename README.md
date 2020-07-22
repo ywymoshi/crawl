@@ -12,7 +12,7 @@
     
     数据库相关  
     ```
-    修改数据库 /db/db.js 连接
+       数据文件都在./db/data/
     打开命令行工具执行以下脚本,导入mongodb 数据
        cd crawl
        mongoimport -d test -c courselessons  --type json --file './db/data/courselessons.json'
