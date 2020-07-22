@@ -7,15 +7,15 @@ const { secretOrkey } = require('../util/config');
 const jwt = require('jsonwebtoken');
 router.post("/login", async ctx => {
   const { username, pwd } = ctx.request.body;
-   const [user] = await users.find({ username: username, pwd: pwd });
+  const [user] = await users.find({ username: username, pwd: pwd });
 
-   if(user) {
-     const token = jwt.sign(user.toJSON(), secretOrkey, { expiresIn: 604800  });
-     ctx.body = { code:1, msg: '登陆成功', token: 'Bearer ' + token };
-   }else {
-     ctx.status = 400;
-     ctx.body = { msg: '账号或密码错误!' };
-   }
+  if(user) {
+    const token = jwt.sign(user.toJSON(), secretOrkey, { expiresIn: 604800  });
+    ctx.body = { code:1, msg: '登陆成功', token: 'Bearer ' + token };
+  }else {
+    ctx.status = 400;
+    ctx.body = { msg: '账号或密码错误!' };
+  }
 });
 
 router.post("/getUserInfo", async ctx => {
