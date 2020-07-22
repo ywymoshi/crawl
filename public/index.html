@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=yes">
+    <title>课程学习</title>
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.11/vue.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.20.0-0/axios.js"></script>
+    <link rel="stylesheet" href="./css/index.css">
+    <link rel="stylesheet" href="./css/loding.css"/>
+</head>
+<body>
+<div id="app">
+    <div class="pub-header">
+        <div class="pub-header-container-wrap">
+                <div class="item-wrap inline-block catalog">
+                    <div class="text-wrap inline-block" @click="isMenuActive = !isMenuActive">
+                        {{isMenuActive?'收起目录':'展开目录' }}
+                    </div>
+                </div>
+                <div class="splice-line inline-block"></div>
+                <div  class="item-wrap inline-block pre disable-button">
+                    <div  class="text-wrap inline-block" @click="prevLesson()">
+                        上一讲
+                    </div>
+                </div>
+                <div class="splice-line inline-block"></div>
+                <div class="item-wrap inline-block next">
+                    <div  class="img-wrap inline-block"></div>
+                    <div  class="text-wrap inline-block"  @click="nextLesson()">
+                        下一讲
+                    </div>
+                </div>
+                <div class="splice-line inline-block"></div>
+                <div class="item-wrap inline-block all">
+                    <div class="text-wrap inline-block" @click="showManage()">
+                        课程列表
+                    </div>
+                </div>
+                <div class="splice-line inline-block"></div>
+                <div class="item-wrap inline-block all">
+                    <div class="text-wrap inline-block" @click="toLogin()">
+                       <span v-if="statusText">管理员</span>
+                        <span v-else>游客</span>
+                    </div>
+                </div>
+                <div class="splice-line inline-block"></div>
+        </div>
+
+    </div>
+    <header class="header" v-show="isHeadActive">
+        <nav class="nav">
+            <ul>
+                <li @click="goCourse(item.id)" v-for="(item,index) of courseLessons" :key="index" class="nav-item"
+                    :class="{'active':isActive==item.id}">
+                    <a><span>{{ item.name }}</span> </a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <main class="main"  v-if="auth.isLogin">
+        <div class="main-wrap">
+            <div class="main-login">
+                <form  >
+                    <div>
+                        <label >用户名：</label>
+                        <input type="text" v-model="form.username" />
+                    </div>
+                    <div>
+                        <label >密码：</label>
+                        <input type="password" v-model="form.pwd" />
+                    </div>
+                    <div>
+                        <button type="button" @click="login()">登录</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+    <main class="main manage-main"  v-else-if="isManage">
+        <div class="main-wrap">
+            <div class="main-course">
+                    <div  v-for="(item,index) of courseLessons" class="course"  @click="changeCourse(item.id)">
+                        <img :src="item.image"  />
+                        <p>{{item.name}}</p>
+                        <p v-if="auth.token"><span @click.stop="updateCourse(item.id,item.courseId)">更新</span></p>
+                    </div>
+            </div>
+        </div>
+    </main>
+    <main class="main" v-else>
+        <div class="main-wrap">
+            <aside class="menu scrool" v-show="isMenuActive">
+                <ul>
+                    <li class="menu-item" v-for="(item,index) of courses" :key="index">
+                        <p class="selection">{{ item.sectionName }}</p>
+                        <div @click="'RELEASE' == item1.status && goLesson(item1.id,item1.courseId)" class="lesson"
+                             :class="{'lesson-active':isLessonActive==item1.id,'un-release': 'UNRELEASE' ==item1.status}"
+                             v-for="(item1,index) of item.courseLessons">
+                            {{item1.theme}}
+                        </div>
+                    </li>
+                </ul>
+            </aside>
+            <article class="lesson-detail scrool">
+                <div class="lesson-wrap">
+                    <div v-html="lessons[0].textContent"></div>
+                </div>
+            </article>
+        </div>
+    </main>
+    <div  class="loading" v-show="isLoading">
+        <div class="loader">
+            <div class="text" id="loading-text">Loading...</div>
+            <div class="horizontal">
+                <div class="circlesup">
+                    <div class="circle"></div>
+                    <div class="circle"></div>
+                    <div class="circle"></div>
+                    <div class="circle"></div>
+                    <div class="circle"></div>
+                </div>
+                <div class="circlesdwn">
+                    <div class="circle"></div>
+                    <div class="circle"></div>
+                    <div class="circle"></div>
+                    <div class="circle"></div>
+                    <div class="circle"></div>
+                </div>
+            </div>
+            <div class="vertical">
+                <div class="circlesup">
+                    <div class="circle"></div>
+                    <div class="circle"></div>
+                    <div class="circle"></div>
+                    <div class="circle"></div>
+                    <div class="circle"></div>
+                </div>
+                <div class="circlesdwn">
+                    <div class="circle"></div>
+                    <div class="circle"></div>
+                    <div class="circle"></div>
+                    <div class="circle"></div>
+                    <div class="circle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+<script>
+
+  const app = new Vue({
+    el: "#app",
+    data() {
+      return {
+        statusText: false,
+        form:{
+          username:'',
+          pwd:''
+        },
+        auth:{
+          isLogin:false,
+          token:''
+        },
+        isHeadActive:false,
+        isMenuActive:true,
+        isLoading:false,
+        isActive: 326,
+        isLessonActive: 4053,
+        courseLessons: [],
+        currentSection:0,
+        currentLesson:0,
+        isManage:false,
+        courses: [],
+        lessons: [{
+          textContent: ''
+        }],
+        url: './',
+      }
+    },
+
+    methods: {
+      toLogin(){
+        const token =localStorage.getItem('authorization');
+        if(!token){
+          this.auth.isLogin = true;
+        }
+      },
+      login(){
+        window.axios.post(`${this.url}user/login`,{ username : this.form.username,pwd:this.form.pwd }).then(res => {
+          this.auth.isLogin = false;
+          this.auth.token  = res.data.token;
+          this.statusText = true;
+          window.localStorage.setItem('authorization',res.data.token)
+        })
+      },
+      getUserInfo(){
+        window.axios.get(`${this.url}user/getUserInfo`).then(res => {
+          window.localStorage.setItem('authorization',res.data.token)
+        })
+      },
+      updateCourse(id){
+          this.isLoading = true;
+          window.axios.post(`${this.url}course/updateCourse`,{ id : id }).then(res => {
+            if(res.data.code === 1){
+              this.isLoading = false;
+            }
+          })
+      },
+      showCourse(){
+            this.isHeadActive = !this.isHeadActive;
+      },
+      prevLesson(){
+        if(this.currentLesson === 0){
+          if(this.currentSection !== 0){
+            this.currentSection --;
+            let data = this.courses[this.currentSection]["courseLessons"];
+            this.currentLesson = data.length - 1;
+          }
+        }else{
+          this.currentLesson --;
+        }
+        let {id,courseId} = this.courses[this.currentSection]["courseLessons"][this.currentLesson]
+        this.goLesson(id,courseId);
+      },
+      nextLesson(){
+        let data = this.courses[this.currentSection]["courseLessons"];
+        if(this.currentLesson === data.length -1){
+          this.currentSection ++;
+          this.currentLesson = 0;
+        }else{
+          this.currentLesson ++;
+        }
+        let {id,courseId} = this.courses[this.currentSection]["courseLessons"][this.currentLesson]
+        this.goLesson(id,courseId);
+      },
+      showManage(){
+        this.isManage = !this.isManage;
+      },
+      getCourseLessons() {
+        window.axios.get(this.url + 'courseLessons').then(res => {
+          this.courseLessons = res.data;
+          this.goCourse(res.data[0].id);
+          // console.log("所有课程信息",this.courseLessons);
+        })
+      },
+      goCourse(id) {
+        this.isHeadActive = false;
+        this.isActive = id;
+        window.axios.get(`${this.url}course/course?id=${id}`).then(res => {
+          this.courses = res.data;
+          const data = res.data[0]["courseLessons"][0];
+          this.goLesson(data["id"], data["courseId"]);
+          // console.log("单个课程所有目录信息",this.courses);
+        })
+      },
+      goLesson(id, courseId) {
+        window.axios.get(`${this.url}course/lesson?id=${id}&courseId=${courseId}`).then(res => {
+          this.lessons = res.data;
+          // console.log("单个目录信息",this.lessons );
+        })
+        this.isLessonActive = id;
+      },
+      changeCourse(id){
+        this.isManage = false;
+        this.currentLesson = 0;
+        this.currentSection = 0;
+        this.goCourse(id);
+      },
+      checkStatus(){
+        this.auth.token = localStorage.getItem('authorization');
+        if(this.auth.token){
+          this.statusText = true
+          window.axios.defaults.headers['authorization'] =this.auth.token;
+        }
+      }
+    },
+    created() {
+      this.checkStatus();
+      this.getCourseLessons();
+    }
+  })
+</script>
+</html>
