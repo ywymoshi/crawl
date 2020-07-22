@@ -18,8 +18,8 @@
        mongoimport -d test -c courselessons  --type json --file './db/data/courselessons.json'
        mongoimport -d test -c lessons  --type json --file './db/data/lessons.json'
        mongoimport -d test -c courses  --type json --file './db/data/courses.json'
-       mongoimport -d test -c users  --type json --file './db/data/users.json'
        users表,用于登录，在课程列表中会显示更新按钮，不登录是没有的，自己将user.json的数据改一下。
+       mongoimport -d test -c users  --type json --file './db/data/users.json'
     ```
     
     执行
