@@ -42,6 +42,7 @@ lessonSchema.statics.add = function(paramJSON = {}){
   })
 }
 //查询数据
+
 lessonSchema.statics.findLesson = function(paramJSON = {}){
   return  new Promise((resolve,reject) => {
     this.model('lesson').find(paramJSON,function (err,result) {
@@ -69,6 +70,7 @@ lessonSchema.statics.removeLesson = function(paramJSON = {}){
     });//类方法
   })
 }
+
 let lesson = db.model('lesson',lessonSchema);
 
 module.exports = lesson;

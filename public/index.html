@@ -162,7 +162,11 @@
           pwd:''
         },
         auth:{
+<<<<<<< HEAD
           isLogin:true,
+=======
+          isLogin:false,
+>>>>>>> a6ec964b46364564e199e0694d2338d3df3154e0
           token:''
         },
         isHeadActive:false,
@@ -271,6 +275,10 @@
         this.goCourse(id);
       },
       checkStatus(){
+<<<<<<< HEAD
+=======
+       this.auth.isLogin = false;
+>>>>>>> a6ec964b46364564e199e0694d2338d3df3154e0
         this.auth.token = localStorage.getItem('authorization');
         if(this.auth.token){
           this.statusText = true

@@ -17,6 +17,7 @@ console.log("课程详细信息正在爬取");
       for(let j = 0; j < courses[i]["courseLessons"].length; j++){
         try{
          a = await lesson.findLesson(
+
           {id:courses[i]["courseLessons"][j]["id"],
             courseId:courses[i]["courseLessons"][j]["courseId"],
             sectionId:courses[i]["courseLessons"][j]["sectionId"]});
