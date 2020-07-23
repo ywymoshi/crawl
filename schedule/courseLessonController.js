@@ -9,7 +9,7 @@ console.log("所有课程信息正在爬取....");
     const courseRecordList = res.data.content.allCoursePurchasedRecord[0]["courseRecordList"];
     let a = null;
     for(let i = 0; i < courseRecordList.length; i++){
-      a = await courseLesson.findOne({id:courseRecordList[i]["id"]});
+      a = await courseLesson.findCourseLesson({id:courseRecordList[i]["id"]});
       if(a.length>0){
         continue;
       }else{

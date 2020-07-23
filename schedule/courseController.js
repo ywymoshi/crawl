@@ -5,7 +5,7 @@ const course = require('../model/course');
 
 console.log("课程目录正在爬取");
 (async ()=>{
-  const courseLessons = await courseLesson.findAll({},function(err,result){
+  const courseLessons = await courseLesson.findCourse({},function(err,result){
     if(err)
       return err;
     return result;
@@ -22,7 +22,7 @@ console.log("课程目录正在爬取");
       }
        courseSectionList = data.data.content.courseSectionList;
       for(let j = 0; j < courseSectionList.length; j++){
-         a = await course.findOne({id:courseSectionList[j]["id"],courseId:courseLessons[i]["id"]});
+         a = await course.findCourse({id:courseSectionList[j]["id"],courseId:courseLessons[i]["id"]});
         if(a.length>0){
           continue;
         }else{
@@ -34,7 +34,6 @@ console.log("课程目录正在爬取");
     console.log("课程目录爬取出错");
     console.log('err',i,j)
   }
-
 })();
 console.log("课程目录爬取成功");
 module.exports = 2;

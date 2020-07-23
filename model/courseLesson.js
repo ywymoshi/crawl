@@ -35,16 +35,7 @@ courseLessonSchema.statics.add = function(paramJSON = {}){
 }
 
 //查询数据
-courseLessonSchema.statics.findAll = function(paramJSON = {}){
- return  new Promise((resolve,reject) => {
-   this.model('courseLesson').find(paramJSON,function (err,result) {
-      if (err)
-        reject(err)
-     resolve(result)
-   });//类方法
-  })
-}
-courseLessonSchema.statics.findOne = function(paramJSON = {}){
+courseLessonSchema.statics.findCourseLesson = function(paramJSON = {}){
   return  new Promise((resolve,reject) => {
     this.model('courseLesson').find(paramJSON,function (err,result) {
       if (err)
@@ -53,7 +44,7 @@ courseLessonSchema.statics.findOne = function(paramJSON = {}){
     });//类方法
   })
 }
-courseLessonSchema.statics.remove = function(paramJSON = {}){
+courseLessonSchema.statics.removeCourseLesson = function(paramJSON = {}){
   return  new Promise((resolve,reject) => {
     this.model('courseLesson').remove(paramJSON,function (err,result) {
       if (err)
@@ -62,11 +53,6 @@ courseLessonSchema.statics.remove = function(paramJSON = {}){
     });//类方法
   })
 }
-//修改数据
-courseLessonSchema.statics.updatecourseLessonMany = function(whereStr,updateStr,options,callback = ()=>{}){
-  this.model('courseLesson').updateMany(whereStr,updateStr,options,callback);//类方法
-}
-
 var courseLesson = db.model('courseLesson',courseLessonSchema);
 
 module.exports = courseLesson;
