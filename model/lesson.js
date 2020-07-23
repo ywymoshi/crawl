@@ -42,7 +42,7 @@ lessonSchema.statics.add = function(paramJSON = {}){
   })
 }
 //查询数据
-lessonSchema.statics.findAll = function(paramJSON = {}){
+lessonSchema.statics.findLesson = function(paramJSON = {}){
   return  new Promise((resolve,reject) => {
     this.model('lesson').find(paramJSON,function (err,result) {
       if (err)
@@ -51,7 +51,16 @@ lessonSchema.statics.findAll = function(paramJSON = {}){
     });//类方法
   })
 }
-lessonSchema.statics.remove = function(paramJSON = {}){
+lessonSchema.statics.updateLesson = function(conditions,doc){
+  return  new Promise((resolve,reject) => {
+    this.model('lesson').updateOne(conditions, doc, function (err, result) {
+      if (err)
+        reject(err)
+      resolve(result);
+    });//类方法
+  });
+}
+lessonSchema.statics.removeLesson = function(paramJSON = {}){
   return  new Promise((resolve,reject) => {
     this.model('lesson').remove(paramJSON,function (err,result) {
       if (err)
@@ -59,33 +68,6 @@ lessonSchema.statics.remove = function(paramJSON = {}){
       resolve(result)
     });//类方法
   })
-}
-/**
- * 自定义实例方法
- */
-//插入数据
-lessonSchema.methods.add = function(callback){
-  //this:lesson实例对象
-  this.save(callback);//实例方法
-}
-lessonSchema.statics.findOne = function(paramJSON = {}){
-  return  new Promise((resolve,reject) => {
-    this.model('lesson').find(paramJSON,function (err,result) {
-      if (err)
-        reject(err)
-      resolve(result)
-    });//类方法
-  })
-}
-//查询数据
-lessonSchema.methods.updateLesson = function(id,courseId,obj){
-  return  new Promise((resolve,reject) => {
-    this.model('lesson').update({id: id, courseId: courseId}, {$set: obj}, function (err, result) {
-      if (err)
-        reject(err)
-      resolve(result);
-    });//类方法
-  });
 }
 let lesson = db.model('lesson',lessonSchema);
 

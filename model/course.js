@@ -34,7 +34,7 @@ courseSchema.statics.add = function(paramJSON = {}){
   })
 }
 //查询数据
-courseSchema.statics.findAll = function(paramJSON = {}){
+courseSchema.statics.findCourse = function(paramJSON = {}){
   return  new Promise((resolve,reject) => {
     this.model('course').find(paramJSON,function (err,result) {
       if (err)
@@ -43,16 +43,7 @@ courseSchema.statics.findAll = function(paramJSON = {}){
     });//类方法
   })
 }
-courseSchema.statics.findOne = function(paramJSON = {}){
-  return  new Promise((resolve,reject) => {
-    this.model('course').find(paramJSON,function (err,result) {
-      if (err)
-        reject(err)
-      resolve(result)
-    });//类方法
-  })
-}
-courseSchema.statics.remove = function(paramJSON = {}){
+courseSchema.statics.removeCourse = function(paramJSON = {}){
   return  new Promise((resolve,reject) => {
     this.model('course').remove(paramJSON,function (err,result) {
       if (err)
@@ -61,7 +52,16 @@ courseSchema.statics.remove = function(paramJSON = {}){
     });//类方法
   })
 }
-
+courseSchema.statics.updateCourse = function(conditions,doc){
+  return  new Promise((resolve,reject) => {
+    console.log("aa")
+    this.model('course').updateOne(conditions , doc,function (err,result) {
+      if (err)
+        reject(err)
+      resolve(result)
+    });//类方法
+  })
+}
 var course = db.model('course',courseSchema);
 
 module.exports = course;
