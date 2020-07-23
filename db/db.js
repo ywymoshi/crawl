@@ -2,7 +2,6 @@ const db = require("mongoose");
 
 // 1.连接
 
-db.connect("mongodb://root:1570555124..@139.199.206.195:27017/lagou", {useNewUrlParser: true,  useUnifiedTopology: true });
 
 // db.connect("mongodb://127.0.0.1:27017/test", {useNewUrlParser: true,  useUnifiedTopology: true });
 
