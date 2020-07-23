@@ -278,12 +278,13 @@
       },
       goCourse(id) {
         this.isHeadActive = false;
-        this.isActive = id;
         window.axios.get(`${this.url}course/course?id=${id}`).then(res => {
           this.courses = res.data;
           const data = res.data[0]["courseLessons"][0];
           this.goLesson(data["id"], data["courseId"]);
-          // console.log("单个课程所有目录信息",this.courses);
+          this.isActive = data["courseId"]
+          this.isLessonActive = data["id"]
+           // console.log("单个课程所有目录信息",this.courses);
         })
       },
       goLesson(id, courseId) {
@@ -304,7 +305,7 @@
         if(token){
           window.axios.defaults.headers['authorization'] = token;
           let {data, msg, code} = await this.getUserInfo(token);
-          console.log(data,msg,code)
+          // console.log(data,msg,code)
           if(data){
              this.auth.token = token;
              this.auth.user = data;
