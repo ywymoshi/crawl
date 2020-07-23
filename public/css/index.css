@@ -3,7 +3,9 @@ html, body, ul, aside, div {
     margin: 0;
     padding: 0;
 }
-
+:focus {
+    outline: none;
+}
 body {
     overflow: hidden;
 }
@@ -198,14 +200,16 @@ li {
     flex-wrap: wrap;
 }
 .course{
-    width: 230px;
+    padding: 5px;
+    width: 234px;
     margin: 20px;
     cursor: pointer;
     user-select: none;
-    box-shadow: 10px 10px 10px rgba(0,0,0,0.3);
+    box-shadow: 0 0 15px rgba(0,0,0,0.3);
 }
 .course p{
     text-align: center;
+    font-size: 18px;
 }
 .course span{
     padding: 2px 10px;
@@ -215,6 +219,62 @@ li {
 }
 .manage-main{
     overflow-y: scroll;
-    height: 99vh;
+    height: calc(100vh - 50px);
 }
 
+.main-login{
+    width: 500px;
+    margin: 0 auto;
+}
+.login-form{
+    padding-top: 30px;
+}
+.login-form .form-group{
+    padding: 5px;
+    text-align: center;
+}
+.login-form .form-group label{
+    display: inline-block;
+    width: 80px;
+}
+.login-form .form-group input{
+      border: none;
+      padding: 10px;
+      width: 200px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      background-color: #fff !important;
+  }
+.login-form .form-group input:focus{
+    border-color: #f1ce64 !important;
+    outline: none;
+}
+.login-form .form-group button {
+    background: #4eb04e;
+    border: none;
+    padding: 10px 30px;
+    color: #fff;
+    user-select: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.msg{
+    position: absolute;
+    right: 20px;
+    border-radius: 5px;
+    top: 20px;
+    padding: 17px 30px;
+    min-width: 100px;
+    z-index: 100;
+    background: rgb(0, 203, 145);
+    box-shadow: 0 0 5px rgba(0,0,0,0.5);
+    color: #fff;
+    text-align: center;
+    transition: all .3s;
+}
+.msg-success{
+    background: rgb(0, 203, 145);
+}
+.msg-error{
+    background: #ff6040;
+ }
