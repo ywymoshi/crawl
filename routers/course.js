@@ -19,14 +19,22 @@ router.get("/lesson", async ctx => {
 
   const data = await lesson.findLesson({id: id, courseId: courseId});
 
-  ctx.body = data
+  ctx.body = data;
 });
+
 router.post("/updateCourse", async ctx => {
   const {id} = ctx.request.body;
 
   const courses = await course.findCourse({courseId:id});
   let netCourse = await axios.get(courseUrl + id);
-  let courseSectionList = netCourse.data.content.courseSectionList;
+  if(!netCourse){
+    ctx.body = {
+      code:-1,
+      data:null,
+      msg:"更新出错,请重新尝试",
+    };
+  }
+  let courseSectionList = netCourse && netCourse.data.content.courseSectionList;
   let sign = null;
   let data = null;
   let lessonId = null;
@@ -76,12 +84,17 @@ router.post("/updateCourse", async ctx => {
       }
     }
   } catch (e) {
-    console.log("更新出错");
+    console.log("更新出错,请重新尝试");
     console.log(e)
+    ctx.body = {
+      code:-1,
+      data:null,
+      msg:"更新出错,请重新尝试",
+    };
   }
   console.log("更新完成")
   ctx.body = {
-    code:1,
+    code:0,
     msg:"更新完成",
     data:courseSectionList
   };

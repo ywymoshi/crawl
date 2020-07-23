@@ -35,7 +35,7 @@
                 <div class="splice-line inline-block"></div>
                 <div class="item-wrap inline-block all">
                     <div class="text-wrap inline-block" @click="showManage()">
-                        课程列表
+                        {{ isManage ? '返回' : '课程列表' }}
                     </div>
                 </div>
                 <div class="splice-line inline-block"></div>
@@ -59,19 +59,19 @@
             </ul>
         </nav>
     </header>
-    <main class="main"  v-if="auth.isLogin">
+    <main class="main"  v-if="auth.onceSgin">
         <div class="main-wrap">
             <div class="main-login">
-                <form  >
-                    <div>
+                <form class="login-form">
+                    <div class="form-group">
                         <label >用户名：</label>
                         <input type="text" v-model="form.username" />
                     </div>
-                    <div>
+                    <div class="form-group">
                         <label >密码：</label>
                         <input type="password" v-model="form.pwd" />
                     </div>
-                    <div>
+                    <div class="form-group">
                         <button type="button" @click="login()">登录</button>
                     </div>
                 </form>
@@ -82,7 +82,7 @@
         <div class="main-wrap">
             <div class="main-course">
                     <div  v-for="(item,index) of courseLessons" class="course"  @click="changeCourse(item.id)">
-                        <img :src="item.image"  />
+<!--                        <img :src="item.image"  />-->
                         <p>{{item.name}}</p>
                         <p v-if="auth.token"><span @click.stop="updateCourse(item.id,item.courseId)">更新</span></p>
                     </div>
@@ -96,7 +96,7 @@
                     <li class="menu-item" v-for="(item,index) of courses" :key="index">
                         <p class="selection">{{ item.sectionName }}</p>
                         <div @click="'RELEASE' == item1.status && goLesson(item1.id,item1.courseId)" class="lesson"
-                             :class="{'lesson-active':isLessonActive==item1.id,'un-release': 'UNRELEASE' ==item1.status}"
+                             :class="{'lesson-active':isLessonActive==item1.id,'un-release': 'UNRELEASE' == item1.status}"
                              v-for="(item1,index) of item.courseLessons">
                             {{item1.theme}}
                         </div>
@@ -147,11 +147,11 @@
             </div>
         </div>
     </div>
+    <div class="msg" v-if="hint.isShow" :class="hint.status ? 'msg-success':'msg-error'">{{ hint.msg }}</div>
 </div>
 
 </body>
-<script>
-
+<script type="text/javascript">
   const app = new Vue({
     el: "#app",
     data() {
@@ -162,8 +162,15 @@
           pwd:''
         },
         auth:{
-          isLogin:true,
-          token:''
+          onceSgin:false,
+          token:'',
+          user:{}
+        },
+        hint:{
+          msg:'',
+          timer:null,
+          isShow:false,
+          status:true
         },
         isHeadActive:false,
         isMenuActive:true,
@@ -181,39 +188,59 @@
         url: './',
       }
     },
-
     methods: {
       toLogin(){
-        const token =localStorage.getItem('authorization');
-        if(!token){
-          this.auth.isLogin = true;
-        }else {
-          this.auth.isLogin = false;
+        if(this.auth.token){
+          return;
+        }else{
+          this.auth.onceSgin = true;
         }
       },
       login(){
-        window.axios.post(`${this.url}user/login`,{ username : this.form.username,pwd:this.form.pwd }).then(res => {
-          this.auth.isLogin = false;
-          this.auth.token  = res.data.token;
-          this.statusText = true;
-          window.localStorage.setItem('authorization',res.data.token)
+        axios.post(`${this.url}user/login`,{ username : this.form.username,pwd:this.form.pwd }).then(res => {
+          let { data, msg, code } = res.data;
+          if(code === 0){
+            localStorage.setItem('authorization',res.data.token)
+            this.auth.token  = res.data.token;
+            this.auth.onceSgin = false;
+            this.statusText = true;
+            this.showMsg(msg, code)
+          }else{
+            this.showMsg(msg, code)
+          }
         })
       },
-      getUserInfo(){
-        window.axios.get(`${this.url}user/getUserInfo`).then(res => {
-          window.localStorage.setItem('authorization',res.data.token)
-        })
+       async getUserInfo (){
+         let res = await  axios.get(`${this.url}user/getUserInfo`);
+         return res.data;
       },
       updateCourse(id){
-          this.isLoading = true;
-          window.axios.post(`${this.url}course/updateCourse`,{ id : id }).then(res => {
-            if(res.data.code === 1){
-              this.isLoading = false;
-            }
-          })
+        this.isLoading = true;
+        this.hint.isShow = false;
+        axios.post(`${this.url}course/updateCourse`,{ id : id }).then(res => {
+          let { code, msg} = res.data;
+          if(code === 1){
+            this.isLoading = false;
+            this.showMsg(msg, code);
+          }
+        })
+      },
+      showMsg(msg, code){
+        if(code === 0){
+          this.hint.status = true;
+        }else{
+          this.hint.status = false;
+        }
+        this.hint.timer = null;
+        this.hint.msg = msg;
+        this.hint.isShow = true;
+        this.hint.timer = setTimeout( ()=>{
+          this.hint.isShow = false;
+          this.hint.timer = null;
+        },2000)
       },
       showCourse(){
-            this.isHeadActive = !this.isHeadActive;
+        this.isHeadActive = !this.isHeadActive;
       },
       prevLesson(){
         if(this.currentLesson === 0){
@@ -243,7 +270,7 @@
         this.isManage = !this.isManage;
       },
       getCourseLessons() {
-        window.axios.get(this.url + 'courseLessons').then(res => {
+        axios.get(this.url + 'courseLessons').then(res => {
           this.courseLessons = res.data;
           this.goCourse(res.data[0].id);
           // console.log("所有课程信息",this.courseLessons);
@@ -272,13 +299,23 @@
         this.currentSection = 0;
         this.goCourse(id);
       },
-      checkStatus(){
-        this.auth.isLogin = false;
-        this.auth.token = localStorage.getItem('authorization');
-        if(this.auth.token){
-          this.statusText = true
-          window.axios.defaults.headers['authorization'] =this.auth.token;
+      async checkStatus(){
+        let token = localStorage.getItem('authorization');
+        if(token){
+          window.axios.defaults.headers['authorization'] = token;
+          let {data, msg, code} = await this.getUserInfo(token);
+          console.log(data,msg,code)
+          if(data){
+             this.auth.token = token;
+             this.auth.user = data;
+             this.statusText = true;
+          }
         }
+      }
+    },
+    computed:{
+      checkLogin(){
+        return this.auth.onceSgin;
       }
     },
     created() {
