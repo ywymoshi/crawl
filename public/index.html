@@ -2,13 +2,14 @@
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
     <title>课程学习</title>
     <link rel="shortcut icon" href="./img/favicon.ico">
     <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.11/vue.js"></script>
     <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.20.0-0/axios.js"></script>
     <link rel="stylesheet" href="./css/index.css">
     <link rel="stylesheet" href="./css/loding.css"/>
+
 </head>
 <body>
 <div id="app">
@@ -45,24 +46,25 @@
                         <span v-else>游客</span>
                     </div>
                 </div>
-                <div class="splice-line inline-block"></div>
         </div>
-
     </div>
-    <header class="header" v-show="isHeadActive">
-        <nav class="nav">
-            <ul>
-                <li @click="goCourse(item.id)" v-for="(item,index) of courseLessons" :key="index" class="nav-item"
-                    :class="{'active':isActive==item.id}">
-                    <a><span>{{ item.name }}</span> </a>
-                </li>
-            </ul>
-        </nav>
-    </header>
+<!--    <header class="header" v-show="isHeadActive">-->
+<!--        <nav class="nav">-->
+<!--            <ul>-->
+<!--                <li @click="goCourse(item.id)" v-for="(item,index) of courseLessons" :key="index" class="nav-item"-->
+<!--                    :class="{'active':isActive==item.id}">-->
+<!--                    <a><span>{{ item.name }}</span> </a>-->
+<!--                </li>-->
+<!--            </ul>-->
+<!--        </nav>-->
+<!--    </header>-->
     <main class="main"  v-if="auth.onceSgin">
         <div class="main-wrap">
             <div class="main-login">
                 <form class="login-form">
+                    <div class="form-group" style="color: red;">
+                        无账号密码请重新刷新页面，并不要进入此页面
+                    </div>
                     <div class="form-group">
                         <label >用户名：</label>
                         <input type="text" v-model="form.username" />
@@ -321,6 +323,10 @@
     },
     created() {
       this.checkStatus();
+      let clientX = document.body.clientWidth;
+      if(clientX <= 1200){
+        this.isMenuActive = false;
+      }
       this.getCourseLessons();
     }
   })
