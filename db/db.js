@@ -3,7 +3,7 @@ const db = require("mongoose");
 // 1.连接
 
 
-// db.connect("mongodb://127.0.0.1:27017/test", {useNewUrlParser: true,  useUnifiedTopology: true });
+db.connect("mongodb://127.0.0.1:27017/test", {useNewUrlParser: true,  useUnifiedTopology: true });
 
 
 const conn = db.connection;
