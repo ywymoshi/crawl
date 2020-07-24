@@ -221,7 +221,7 @@
         this.hint.isShow = false;
         axios.post(`${this.url}course/updateCourse`,{ id : id }).then(res => {
           let { code, msg} = res.data;
-          if(code === 1){
+          if(code === 0){
             this.isLoading = false;
             this.showMsg(msg, code);
           }
