@@ -5,7 +5,7 @@ const course = require('../model/course');
 
 console.log("课程目录正在爬取");
 (async ()=>{
-  const courseLessons = await courseLesson.findCourse({},function(err,result){
+  const courseLessons = await courseLesson.findCourseLesson({},function(err,result){
     if(err)
       return err;
     return result;

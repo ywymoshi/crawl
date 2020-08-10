@@ -1,6 +1,4 @@
-const courselessons = require('courseLessonController');
-console.log(courselessons);
-const courses = require('courseController');
-console.log(courses);
-const lessons = require('lessonController');
-console.log(lessons);
+const courselessons = require('./courseLessonController');
+const courses = require('./courseController');
+const lessons = require('./lessonController');
+return {courselessons, courses, lessons}

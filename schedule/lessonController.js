@@ -4,7 +4,7 @@ const course = require('../model/course');
 const lesson = require('../model/lesson');
 console.log("课程详细信息正在爬取");
 (async ()=> {
-  const courses =await course.findLesson({},function(err,result){
+  const courses =await course.findCourse({},function(err,result){
     if(err)
       return "err";
     return result;
@@ -17,7 +17,6 @@ console.log("课程详细信息正在爬取");
       for(let j = 0; j < courses[i]["courseLessons"].length; j++){
         try{
          a = await lesson.findLesson(
-
           {id:courses[i]["courseLessons"][j]["id"],
             courseId:courses[i]["courseLessons"][j]["courseId"],
             sectionId:courses[i]["courseLessons"][j]["sectionId"]});

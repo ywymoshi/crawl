@@ -6,7 +6,9 @@ console.log("所有课程信息正在爬取....");
 (async ()=>{
   try{
     const res = await axios.get(courseLessonUrl);
-    const courseRecordList = res.data.content.allCoursePurchasedRecord[0]["courseRecordList"];
+
+    const courseRecordList = res.data.content.allCoursePurchasedRecord[1]["courseRecordList"];
+
     let a = null;
     for(let i = 0; i < courseRecordList.length; i++){
       a = await courseLesson.findCourseLesson({id:courseRecordList[i]["id"]});

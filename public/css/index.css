@@ -51,7 +51,22 @@ li {
     -webkit-transition: .3s;
     transition:all .3s;
 }
-
+.menu-child {
+    position: absolute;
+    font-size: 14px;
+    width: 130px;
+    top: 49px;
+    left: 0;
+    background: white;
+}
+.menu-child p {
+    border: 1px solid #d5dadf;
+    padding: 10px 0;
+    margin: 0;
+}
+.menu-child p:hover {
+    color: #00b38a;
+}
 .main {
     margin-top: 50px;
 }
@@ -70,9 +85,6 @@ li {
     text-overflow: ellipsis;
 }
 
-.menu-item {
-
-}
 
 .lesson {
     font-size: 14px;
@@ -194,8 +206,10 @@ li {
     margin-right: 22px;
 }
 .pub-header-container-wrap .item-wrap:hover {
-    color: #00b38a;
     background: #f8f8f8;
+}
+.item-wrap:hover .text-wrap{
+    color: #00b38a;
 }
 .main-course{
     display: flex;

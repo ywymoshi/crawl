@@ -99,5 +99,13 @@ router.post("/updateCourse", async ctx => {
     data:courseSectionList
   };
 });
+router.post("/updateAllCourse", async ctx => {
+  const {courselessons, courses, lessons} = require('../schedule/index.js');
+  ctx.body = {
+    code:0,
+    data:{courselessons, courses, lessons},
+    msg:"更新完成",
+  };
+});
 
 module.exports = router;

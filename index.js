@@ -4,7 +4,7 @@ const koaBody = require('koa-body');
 const static = require('koa-static');
 const cors = require('koa2-cors');
 const cacheControl = require('koa-cache-control');
-const koajwt = require('koa-jwt')
+const koaJwt = require('koa-jwt');
 const app = new Koa({proxy:true});
 app.use(cors());
 app.use(cacheControl({
@@ -25,19 +25,18 @@ app.use(async (ctx, next) => {
   })
 })
 
-app.use(koajwt({
+app.use(koaJwt({
   secret: '123456'
 }).unless({
   path: [/^\/user\/login/,/^\/course/,/\//]
 }))
-app.use(koaBody({
+.use(koaBody({
   multipart: true,
   formidable: {
     maxFileSize: 200*1024*1024    // 设置上传文件大小最大限制，默认2M
   }
-}));
-
-app.use(hbs.middleware({
+}))
+.use(hbs.middleware({
   viewPath: __dirname + '/views', //视图根目录    
   disableCache: true//开发阶段不缓存
 }));
