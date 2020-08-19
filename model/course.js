@@ -47,7 +47,7 @@ courseSchema.statics.findCourse = function(paramJSON = {}){
 
 courseSchema.statics.removeCourse = function(paramJSON = {}){
   return  new Promise((resolve,reject) => {
-    this.model('course').remove(paramJSON,function (err,result) {
+    this.model('course').deleteMany(paramJSON,function (err,result) {
       if (err)
         reject(err)
       resolve(result)

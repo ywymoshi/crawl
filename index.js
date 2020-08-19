@@ -51,5 +51,5 @@ routers.forEach(item =>{
 
 //开始监听端口，等同于//http.createServer(app.callback()).listen(3000);
 app.listen(8089,()=>{
-  console.error("访问:http://localhost:8089");
+  console.info("访问:http://localhost:8089");
 });

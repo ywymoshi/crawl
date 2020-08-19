@@ -152,7 +152,7 @@ const app = new Vue({
     goLesson(id, courseId) {
       window.axios.get(`${this.url}course/lesson?id=${id}&courseId=${courseId}`).then(res => {
         this.lessons = res.data;
-        // console.log("单个目录信息",this.lessons );
+           console.log("单个目录信息",this.lessons );
       })
       this.isLessonActive = id;
     },
@@ -179,6 +179,9 @@ const app = new Vue({
   computed: {
     checkLogin() {
       return this.auth.onceSign;
+    },
+    comLesson() {
+      return this.lessons[this.lessons.length - 1]['textContent']
     }
   },
   created() {
