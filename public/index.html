@@ -78,7 +78,7 @@
     <main class="main manage-main"  v-else-if="isManage">
         <div class="main-wrap">
             <div class="main-course">
-                    <div  v-for="(item,index) of courseLessons" class="course"  @click="changeCourse(item.id)">
+                    <div  v-for="(item,index) of courseLessons" class="course"   @click="changeCourse(item.id)">
 <!--                        <img :src="item.image"  />-->
                         <p>{{item.name}}</p>
                         <p v-if="auth.token"><span @click.stop="updateCourse(item.id,item.courseId)">更新</span></p>
@@ -94,7 +94,7 @@
                         <p class="selection">{{ item.sectionName }}</p>
                         <div @click="'RELEASE' == item1.status && goLesson(item1.id,item1.courseId)" class="lesson"
                              :class="{'lesson-active':isLessonActive==item1.id,'un-release': 'UNRELEASE' == item1.status}"
-                             v-for="(item1,index) of item.courseLessons">
+                             v-for="(item1,index) of item.courseLessons"  :attr_id="item1.id" :courseId="item1.courseId">
                             {{item1.theme}}
                         </div>
                     </li>

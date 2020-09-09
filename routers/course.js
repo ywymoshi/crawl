@@ -11,13 +11,13 @@ router.get("/course", async ctx => {
 
   const data = await course.findCourse({courseId: id});
 
-  ctx.body = data
+  ctx.body = data;
 });
 router.get("/lesson", async ctx => {
   const {id, courseId} = ctx.query;
 
   const data = await lesson.findLesson({id: id, courseId: courseId});
-  console.log(data)
+
   ctx.body = data;
 });
 
@@ -102,26 +102,26 @@ router.get("/lesson", async ctx => {
 //     data:courseSectionList
 //   };
 // });
+
 router.post("/updateCourse", async ctx => {
   const {id} = ctx.request.body;
-   await course.removeCourse({courseId:id});
+  await course.removeCourse({courseId:id});
   let netCourse = await axios.get(courseUrl + id);
   if(!netCourse){
     ctx.body = {
       code:-1,
       data:null,
-      msg:"更新出错,请重新尝试",
+      msg:"更新出错,请重新尝试"
     };
   }
   let courseSectionList = netCourse && netCourse.data.content.courseSectionList;
-
+  console.log("开始更新");
   let data = null;
   let lessonId = null;
   let courseId = null;
   let lessonData = null;
   let sectionId = null;
   let isLesson = null;
-  console.log("开始更新");
   let courseLessons = null;
   try {
     for(let i = 0; i < courseSectionList.length; i++){
@@ -138,23 +138,24 @@ router.post("/updateCourse", async ctx => {
         if(isLesson.length > 0 && (!!isLesson[0]["textContent"])){
           continue;
         }
-
         data = await axios.get(lessonUrl + lessonId);
         if(!data){
           j--;
           continue;
         }
         lessonData =  data.data.content;
-        console.log(data)
-        if (!(!!isLesson[0]["textContent"])) {
-          console.log(lessonData.textContent)
+         console.log(isLesson)
+        if (isLesson.length && !(!!isLesson[0]["textContent"])) {
+          console.log(lessonData.textContent);
+          console.log("content",data.data.content);
           await lesson.updateLesson({'id':lessonId, 'courseId': courseId}, {$set: {'textContent':lessonData.textContent}});
-        }else  {
-           await lesson.add(lessonData);
+        } else  {
+          console.log(lessonData)
+          await lesson.add(lessonData);
         }
       }
     }
-    } catch (e) {
+  } catch (e) {
     console.log("更新出错,请重新尝试");
     console.log(e)
     ctx.body = {
@@ -170,7 +171,6 @@ router.post("/updateCourse", async ctx => {
     data:courseSectionList
   };
 });
-
 
 router.post("/updateAllCourse", async ctx => {
   const {courselessons, courses, lessons} = require('../schedule/index.js');

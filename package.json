@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "de": "node --inspect index"
+    "de": "node --inspect index",
+    "start": "node index"
   },
   "keywords": [],
   "author": "",

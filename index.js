@@ -7,10 +7,10 @@ const cacheControl = require('koa-cache-control');
 const koaJwt = require('koa-jwt');
 const app = new Koa({proxy:true});
 app.use(cors());
-app.use(cacheControl({
-    maxAge: 5 * 60
-  })
-);
+// app.use(cacheControl({
+//     maxAge: 5 * 60
+//   })
+// );
 app.use(async (ctx, next) => {
   return next().catch((err) => {
     if(err.status === 401){

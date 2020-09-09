@@ -24,8 +24,8 @@ const app = new Vue({
       isHeadActive: false,
       isMenuActive: true,
       isLoading: false,
-      isActive: 326,
-      isLessonActive: 4053,
+      isActive: -1,
+      isLessonActive: -1,
       courseLessons: [],
       currentSection: 0,
       currentLesson: 0,
@@ -134,25 +134,25 @@ const app = new Vue({
     getCourseLessons() {
       axios.get(this.url + 'courseLessons').then(res => {
         this.courseLessons = res.data;
-        this.goCourse(res.data[0].id);
-        // console.log("所有课程信息",this.courseLessons);
+        this.goCourse(this.isActive || res.data[0].id, true);
+         console.log("所有课程信息",this.courseLessons);
       })
     },
-    goCourse(id) {
+    goCourse(id, flag) {
       this.isHeadActive = false;
       window.axios.get(`${this.url}course/course?id=${id}`).then(res => {
         this.courses = res.data;
         const data = res.data[0]["courseLessons"][0];
-        this.goLesson(data["id"], data["courseId"]);
-        this.isActive = data["courseId"]
-        this.isLessonActive = data["id"]
+        this.goLesson(flag ? this.isLessonActive : data["id"], flag ?this.isActive :  data["courseId"]);
+        this.isActive = flag ? this.isActive : data["courseId"];
+        this.isLessonActive =flag ? this.isLessonActive :  data["id"];
         // console.log("单个课程所有目录信息",this.courses);
       })
     },
     goLesson(id, courseId) {
       window.axios.get(`${this.url}course/lesson?id=${id}&courseId=${courseId}`).then(res => {
         this.lessons = res.data;
-           console.log("单个目录信息",this.lessons );
+           console.log("单个目录信息",this.lessons);
       })
       this.isLessonActive = id;
     },
@@ -167,14 +167,21 @@ const app = new Vue({
       if (token) {
         window.axios.defaults.headers['authorization'] = token;
         let {data, msg, code} = await this.getUserInfo(token);
-        // console.log(data,msg,code)
+        // console.log(data,msg,code);
         if (data) {
           this.auth.token = token;
           this.auth.user = data;
           this.statusText = true;
         }
       }
-    }
+    },
+    addLocalStorage() {
+      window.localStorage.setItem('courseId',this.isActive);
+      window.localStorage.setItem('lessonId',this.isLessonActive);
+    },
+    getLocalStorage(id) {
+      return window.localStorage.getItem(id);
+    },
   },
   computed: {
     checkLogin() {
@@ -190,6 +197,18 @@ const app = new Vue({
     if (clientX <= 1200) {
       this.isMenuActive = false;
     }
+    this.isActive = this.getLocalStorage('courseId');
+    this.isLessonActive = this.getLocalStorage('lessonId');
+    console.log( this.isActive, this.isLessonActive);
     this.getCourseLessons();
+
+  },
+  mounted(){
+    window.addEventListener('beforeunload', e => {
+      this.addLocalStorage();
+    })
+  },
+  beforeDestroy() {
+    window.removeEventListener('beforeunload');
   }
 })
